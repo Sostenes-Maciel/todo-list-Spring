@@ -1,71 +1,173 @@
 package br.com.zg.todolist.backend.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
+@Table(name = "tarefa")
 public class Tarefa {
 
-    private static final DateTimeFormatter FORMATADOR_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter FORMATADOR_ALARME = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter FORMATADOR_DATA =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private static final DateTimeFormatter FORMATADOR_ALARME =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
+    @Column(name = "nome")
     private String nome;
+
+    @Column(name = "descricao")
     private String descricao;
+
+    @Column(name = "data_termino")
     private LocalDate dataTermino;
+
+    @Column(name = "prioridade", nullable = false)
     private int prioridade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
+
+    @Column(name = "horario_alarme")
     private LocalDateTime horarioAlarme;
+
+    protected Tarefa() {
+    }
 
     private Tarefa(TarefaBuilder builder) {
         this.nome = builder.nome;
         this.descricao = builder.descricao;
         this.dataTermino = builder.dataTermino;
         this.categoria = builder.categoria;
-        this.status = builder.status != null ? builder.status : Status.TODO;
+        this.status = builder.status != null
+                ? builder.status
+                : Status.TODO;
+
         setPrioridade(builder.prioridade);
+
         this.horarioAlarme = builder.horarioAlarme;
     }
 
-    // Getters e Setters originais mantidos...
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
-    public LocalDate getDataTermino() { return dataTermino; }
-    public void setDataTermino(LocalDate dataTermino) { this.dataTermino = dataTermino; }
-    public int getPrioridade() { return prioridade; }
+    public Long getId() {
+        return id;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public LocalDate getDataTermino() {
+        return dataTermino;
+    }
+
+    public void setDataTermino(LocalDate dataTermino) {
+        this.dataTermino = dataTermino;
+    }
+
+    public int getPrioridade() {
+        return prioridade;
+    }
+
     public void setPrioridade(int prioridade) {
         validarPrioridade(prioridade);
         this.prioridade = prioridade;
     }
-    public Categoria getCategoria() { return categoria; }
-    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
-    public LocalDateTime getHorarioAlarme() { return horarioAlarme; }
-    public void setHorarioAlarme(LocalDateTime horarioAlarme) { this.horarioAlarme = horarioAlarme; }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getHorarioAlarme() {
+        return horarioAlarme;
+    }
+
+    public void setHorarioAlarme(LocalDateTime horarioAlarme) {
+        this.horarioAlarme = horarioAlarme;
+    }
 
     @Override
     public String toString() {
+
+        String nomeCategoria = categoria != null
+                ? categoria.getNome()
+                : "Sem categoria";
+
+        String prazo = dataTermino != null
+                ? dataTermino.format(FORMATADOR_DATA)
+                : "Sem prazo";
+
         String resultado = String.format(
                 "[%s] Prioridade %d | %s (Categoria: %s) - %s | Prazo: %s",
-                status, prioridade, nome, categoria.getNome(), descricao,
-                dataTermino.format(FORMATADOR_DATA)
+                status,
+                prioridade,
+                nome,
+                nomeCategoria,
+                descricao,
+                prazo
         );
+
         if (horarioAlarme != null) {
-            resultado += " | Alarme: " + horarioAlarme.format(FORMATADOR_ALARME);
+            resultado += " | Alarme: "
+                    + horarioAlarme.format(FORMATADOR_ALARME);
         }
+
         return resultado;
     }
 
     private void validarPrioridade(int prioridade) {
         if (prioridade < 1 || prioridade > 5) {
-            throw new IllegalArgumentException("Erro: O número da prioridade deve ser entre 1 e 5");
+            throw new IllegalArgumentException(
+                    "Erro: O número da prioridade deve ser entre 1 e 5"
+            );
         }
     }
 
     public static class TarefaBuilder {
+
         private String nome;
         private String descricao;
         private LocalDate dataTermino;
@@ -104,7 +206,9 @@ public class Tarefa {
             return this;
         }
 
-        public TarefaBuilder comHorarioAlarme(LocalDateTime horarioAlarme) {
+        public TarefaBuilder comHorarioAlarme(
+                LocalDateTime horarioAlarme
+        ) {
             this.horarioAlarme = horarioAlarme;
             return this;
         }
