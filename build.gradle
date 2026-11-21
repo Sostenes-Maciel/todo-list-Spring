@@ -29,6 +29,8 @@ dependencies {
     // Validação de dados
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1'
+
     // Driver PostgreSQL
     runtimeOnly 'org.postgresql:postgresql'
 
