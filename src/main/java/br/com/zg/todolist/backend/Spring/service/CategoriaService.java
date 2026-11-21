@@ -1,7 +1,7 @@
-package br.com.zg.todolist.backend.service;
+package br.com.zg.todolist.backend.Spring.service;
 
 import br.com.zg.todolist.backend.model.Categoria;
-import br.com.zg.todolist.backend.repository.CategoriaRepository;
+import br.com.zg.todolist.backend.Spring.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

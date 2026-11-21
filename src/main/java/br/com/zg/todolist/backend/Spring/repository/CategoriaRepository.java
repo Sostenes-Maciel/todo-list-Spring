@@ -1,4 +1,4 @@
-package br.com.zg.todolist.backend.repository;
+package br.com.zg.todolist.backend.Spring.repository;
 
 import br.com.zg.todolist.backend.model.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
