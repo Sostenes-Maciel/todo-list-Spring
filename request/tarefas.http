@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:8080
+
+### 1. Listar tarefas
+GET {{baseUrl}}/tarefas
+Accept: application/json
+
+
+### 2. Criar tarefa
+POST {{baseUrl}}/tarefas
+Content-Type: application/json
+
+{
+  "nome": "Validar CRUD REST",
+  "descricao": "Teste de persistencia no PostgreSQL",
+  "dataTermino": "2026-12-01",
+  "prioridade": 4,
+  "categoriaId": null,
+  "status": "TODO",
+  "horarioAlarme": null
+}
+
+> {% client.global.set("tarefaId", response.body.id); %}
+
+
+### 3. Buscar tarefa por ID
+GET {{baseUrl}}/tarefas/{{tarefaId}}
+Accept: application/json
+
+
+### 4. Atualizar tarefa
+PUT {{baseUrl}}/tarefas/{{tarefaId}}
+Content-Type: application/json
+
+{
+  "nome": "Tarefa atualizada",
+  "descricao": "Teste de atualizacao via PUT",
+  "dataTermino": "2026-12-05",
+  "prioridade": 3,
+  "categoriaId": null,
+  "status": "DONE",
+  "horarioAlarme": null
+}
+
+
+### 5. Excluir tarefa
+DELETE {{baseUrl}}/tarefas/{{tarefaId}}
+
+
+### 6. Conferir exclusão
+GET {{baseUrl}}/tarefas
+Accept: application/json
